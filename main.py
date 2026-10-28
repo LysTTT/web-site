@@ -1,16 +1,21 @@
-# This is a sample Python script.
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+HOST = "127.0.0.1"
+PORT = 8000
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def run_server() -> None:
+    handler = partial(SimpleHTTPRequestHandler, directory=str(PROJECT_ROOT))
+    with ThreadingHTTPServer((HOST, PORT), handler) as server:
+        print(f"Website is available at http://{HOST}:{PORT}/index1.html")
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            print("\nServer stopped.")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+if __name__ == "__main__":
+    run_server()
